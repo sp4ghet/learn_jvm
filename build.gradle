@@ -1,0 +1,39 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+repositories {
+  mavenCentral()
+}
+
+sourceSets{
+    main{
+        java{
+            srcDirs = ["src/main/java"]
+        }
+    }
+}
+
+dependencies {
+	implementation "ca.mcgill.sable:soot:3.3.0"
+}
+
+application {
+    mainClass = 'com.sp4ghet.SimpleAlgorithm'
+    applicationName = 'foo'
+}
+
+task jimple {
+    dependsOn installDist
+    doLast {
+        def proc = "java -cp soot.jar soot.Main -cp /Library/Java/JavaVirtualMachines/adoptopenjdk-8.jdk/Contents/Home/jre/lib/rt.jar:./build/classes/main/java/ -f jimple -process-dir ./build/classes/java/main/".execute()
+        proc.waitForProcessOutput(System.out, System.err)
+    }
+}
+
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+version = '1.2.1'
